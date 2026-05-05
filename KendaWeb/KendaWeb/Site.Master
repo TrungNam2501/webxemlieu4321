@@ -1,0 +1,169 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="KendaWeb.SiteMaster" %>
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%: Page.Title %> KENDA-WEB</title>
+
+
+    <asp:PlaceHolder runat="server">
+        <%: Scripts.Render("~/bundles/jquery") %>
+        <%: Scripts.Render("~/bundles/jquery_ui") %>
+        <%: Scripts.Render("~/bundles/bootstrap") %>
+        <%: Scripts.Render("~/bundles/main") %>
+    </asp:PlaceHolder>
+    <link href="Content/jquery.timepicker.min.css" rel="stylesheet" />
+    <webopt:BundleReference runat="server" Path="~/Content/css" />
+    <link href="Content/jquery-ui-themes-1.13.0/themes/base/jquery-ui.css" rel="stylesheet" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <style>
+        /* Style The Dropdown Button */
+        .dropbtn {
+            background-color: #222222;
+            color: #9d9d9d;
+            padding: 14px;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* The container <div> - needed to position the dropdown content */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Dropdown Content (Hidden by Default) */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+            /* Links inside the dropdown */
+            .dropdown-content a {
+                color: black;
+                padding: 12px 16px;
+                text-decoration: none;
+                display: block;
+            }
+
+                /* Change color of dropdown links on hover */
+                .dropdown-content a:hover {
+                    background-color: #f1f1f1
+                }
+
+        /* Show the dropdown menu on hover */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Change the background color of the dropdown button when the dropdown content is shown */
+        .dropdown:hover .dropbtn {
+            background-color: #3e8e41;
+        }
+
+        .red-arrow {
+            display: inline-block;
+            margin-left: 5px;
+            width: 0;
+            height: 0;
+            vertical-align: middle;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 6px solid red;
+        }
+    </style>
+</head>
+<body>
+    <form runat="server">
+
+        <div class="navbar navbar-inverse" style="margin: 0; border-radius: 0;">
+            <ul class="nav navbar-nav text_design" style="height: 100%;">
+                <li><a runat="server" href="~/View/Home">Trang chủ</a></li>
+
+                <li id="IT" class="Li_Hidden">
+                    <div class="dropdown">
+                        <button class="dropbtn">IT sử dụng <span class="red-arrow"></span></button>
+                        <div class="dropdown-content">
+                            <a runat="server" href="~/View/IT/IT">IT</a>
+                            <a runat="server" href="~/View/XemLieuBB/Kiemtrapalletxuatkeo">Kiểm tra Pallet</a>
+                            <a runat="server" href="~/View/BB2/Loimayhoachat">Lỗi máy hóa chất</a>
+
+                        </div>
+                    </div>
+                </li>
+
+
+                <li id="BB1" class="Li_Hidden">
+                    <div class="dropdown">
+                        <button class="dropbtn">Xem liệu BB <span class="red-arrow"></span></button>
+                        <div class="dropdown-content">
+                            <a runat="server" href="~/View/XemLieuBB/XemLieuBB">Hệ thống mes KENDA</a>
+                            <a runat="server" href="~/View/XemLieuBB/ApiBB">Hệ thống mes YAML</a>
+                            <a runat="server" href="~/View/XemLieuBB/Xemthanbb">Giám sát tem than</a>
+                            <a runat="server" href="~/View/XemLieuBB/xuatdulieubieudo">Xuất dữ liệu biểu đồ BB</a>
+                        </div>
+                    </div>
+                </li>
+                <li id="BB2" class="Li_Hidden">
+                    <div class="dropdown">
+                        <button class="dropbtn">BB xử lý <span class="red-arrow"></span></button>
+                        <div class="dropdown-content">
+                            <a runat="server" href="~/View/XemLieuBB/Keoxuly">Keo xử lý BB</a>
+                            <a runat="server" href="~/View/XemLieuBB/Nhapkeore">NX keo RE</a>
+
+                        </div>
+                    </div>
+                </li>
+
+
+                <%--     <li id="BB3" class="Li_Hidden"><a runat="server" href="~/View/BB2/Hoachat">Xem liệu Hoá Chất</a></li>--%>
+
+
+
+                <li id="BB3" class="Li_Hidden">
+                    <div class="dropdown">
+                        <button class="dropbtn">Hóa chất thí nghiệm <span class="red-arrow"></span></button>
+                        <div class="dropdown-content">
+                            <a runat="server" href="~/View/BB2/Hoachat">Máy hóa chất</a>
+                           <%-- <a runat="server" href="~/View/BB2/Hoachatcantay">Hóa chất cân tay</a>--%>
+
+                        </div>
+                    </div>
+                </li>
+                <li id="KeoRL" class="Li_Hidden"><a runat="server" href="~/View/Keotaiche/Xemlieukeotaiche">Keo Tái Chế</a></li>
+
+                <li id="Xemplcnew" class="Li_Hidden">
+                    <div class="dropdown">
+                        <button class="dropbtn">PLC BB <span class="red-arrow"></span></button>
+                        <div class="dropdown-content">
+                            <a runat="server" href="~/View/XemlieuPLC/XemLieuPLCnew">MES KV</a>
+                            <a runat="server" href="~/View/XemlieuPLC/PLCYaml">MES YAML</a>
+
+                        </div>
+                    </div>
+                </li>
+
+                <%-- <li id="Xemplcnew" class="Li_Hidden"><a runat="server" href="~/View/XemlieuPLC/XemLieuPLCnew">Điều kiện đánh keo (PLC)</a></li>--%>
+            </ul>
+            <ul class=" nav navbar-nav text_design" style="float: right; height: 100%;">
+                <li>
+                    <asp:Label ID="lbSoThe" Style="display: block; padding: 15px 0; color: #9d9d9d" runat="server" /></li>
+                <li><span style="display: block; padding: 10px 5px;" href="#">|</span></li>
+                <li style="height: 100%;">
+                    <asp:Button Style="display: inline; height: 100%; border: none; background-color: #222; color: #9d9d9d; padding: 15px 0; padding-right: 10px" ID="btnDangXuat" OnClick="btnDangXuat_Click" Text="Đăng xuất" runat="server" />
+                </li>
+            </ul>
+        </div>
+        <asp:ContentPlaceHolder ID="MainContent" runat="server">
+        </asp:ContentPlaceHolder>
+    </form>
+</body>
+</html>
