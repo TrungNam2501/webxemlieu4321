@@ -1,3 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --primary: #2563eb;
+  --primary-light: #3b82f6;
+  --primary-dark: #1d4ed8;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --info: #6366f1;
+  --bg: #f0f2f5;
+  --card-bg: #ffffff;
+  --header-bg: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --border: #e5e7eb;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -5,89 +28,354 @@
 }
 
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f5f5f5;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: var(--bg);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
 }
 
+/* ── Page Layout ── */
 .page-container {
-  padding: 10px 20px;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 20px 24px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #1e3a5f, #2563eb);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.3px;
+}
+
+.page-subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+/* ── Filter Bar ── */
+.filter-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
 }
 
 .filter-bar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
-  padding: 10px 0;
-  margin-bottom: 10px;
+  gap: 12px;
 }
 
-.filter-bar .el-input,
-.filter-bar .el-select {
-  width: 160px;
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.filter-divider {
+  width: 1px;
+  height: 32px;
+  background: var(--border);
+  margin: 0 4px;
+}
+
+/* ── Table Container ── */
+.table-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.table-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.table-toolbar .count-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.table-toolbar .count-badge strong {
+  color: var(--primary);
+  font-size: 18px;
+  font-weight: 700;
 }
 
 .table-container {
-  border: 3px solid #333;
-  border-radius: 4px;
   overflow: auto;
-  max-height: 75vh;
+  max-height: 68vh;
 }
 
-.table-container .el-table {
-  font-size: 16px;
-  font-weight: bold;
-  font-family: Arial, sans-serif;
+/* ── Element Plus Table Overrides ── */
+.el-table {
+  --el-table-border-color: var(--border);
+  --el-table-header-bg-color: #f8fafc;
+  --el-table-row-hover-bg-color: #eff6ff;
+  font-size: 13px !important;
+  font-family: 'Inter', sans-serif !important;
 }
 
-.table-container .el-table th {
-  background-color: #4a6fa5;
-  color: white;
-  text-align: center;
-  font-weight: bold;
+.el-table th.el-table__cell {
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%) !important;
+  color: #334155 !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  border-bottom: 2px solid var(--primary) !important;
+  padding: 12px 8px !important;
 }
 
-.table-container .el-table td {
-  text-align: center;
+.el-table td.el-table__cell {
+  padding: 10px 8px !important;
+  font-weight: 500 !important;
+  color: var(--text-primary) !important;
+}
+
+.el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell {
+  background: #fafbfc !important;
+}
+
+/* ── Element Plus Overrides ── */
+.el-button {
+  border-radius: var(--radius-sm) !important;
+  font-weight: 600 !important;
+  font-family: 'Inter', sans-serif !important;
+  letter-spacing: 0.2px;
+  transition: all 0.2s ease !important;
+}
+
+.el-button--primary {
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+
+.el-button--primary:hover {
+  background: var(--primary-light) !important;
+  border-color: var(--primary-light) !important;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4) !important;
+}
+
+.el-button--danger {
+  background: var(--danger) !important;
+  border-color: var(--danger) !important;
+}
+
+.el-button--danger:hover {
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4) !important;
+}
+
+.el-button--success {
+  background: var(--success) !important;
+  border-color: var(--success) !important;
+}
+
+.el-button--success:hover {
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4) !important;
+}
+
+.el-select .el-input__wrapper,
+.el-date-editor .el-input__wrapper,
+.el-input .el-input__wrapper {
+  border-radius: var(--radius-sm) !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
+  border: 1px solid var(--border) !important;
+  transition: all 0.2s ease !important;
+}
+
+.el-select .el-input__wrapper:hover,
+.el-date-editor .el-input__wrapper:hover,
+.el-input .el-input__wrapper:hover {
+  border-color: var(--primary-light) !important;
+}
+
+.el-select .el-input.is-focus .el-input__wrapper,
+.el-date-editor .el-input__wrapper:focus-within,
+.el-input .el-input__wrapper:focus-within {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+}
+
+/* ── Modal / Dialog ── */
+.el-dialog {
+  border-radius: var(--radius) !important;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.el-dialog__header {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.el-dialog__headerbtn {
+  top: 16px !important;
+  right: 16px !important;
+  z-index: 10;
+}
+
+.el-dialog__headerbtn .el-dialog__close {
+  color: white !important;
+  font-size: 20px !important;
+}
+
+.el-dialog__body {
+  padding: 0 !important;
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 15px;
-  background-color: #666;
+  padding: 16px 24px;
+  background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
   color: white;
-  border-radius: 8px 8px 0 0;
+}
+
+.modal-header span {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
 }
 
 .modal-body {
-  padding: 10px;
-  background-color: gainsboro;
-  max-height: 70vh;
+  padding: 16px;
+  background: var(--bg);
+  max-height: 72vh;
   overflow: auto;
 }
 
-.page-title {
-  font-size: 24px;
-  font-weight: bold;
-  color: red;
+/* ── Date Picker Popper ── */
+.el-date-picker {
+  font-family: 'Inter', sans-serif !important;
 }
 
-.btn-view {
-  cursor: pointer;
-  width: 60px;
-  height: 25px;
+/* ── Loading ── */
+.el-loading-mask {
+  border-radius: var(--radius-sm);
 }
 
+/* ── Message ── */
+.el-message {
+  border-radius: var(--radius-sm) !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ── Action Buttons in Table ── */
+.action-btn {
+  width: 36px !important;
+  height: 36px !important;
+  padding: 0 !important;
+  border-radius: 8px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+}
+
+.action-btn:hover {
+  transform: scale(1.08);
+}
+
+.action-btn .el-icon {
+  font-size: 16px !important;
+}
+
+/* ── Empty State ── */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-secondary);
+}
+
+.empty-state .el-icon {
+  font-size: 48px;
+  color: #d1d5db;
+  margin-bottom: 12px;
+}
+
+.empty-state p {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* ── Responsive ── */
 @media (max-width: 768px) {
+  .page-container {
+    padding: 12px;
+  }
+
+  .filter-card {
+    padding: 14px;
+  }
+
   .filter-bar {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .filter-bar .el-input,
-  .filter-bar .el-select {
+  .filter-group {
     width: 100%;
+  }
+
+  .filter-divider {
+    display: none;
+  }
+
+  .filter-bar .el-select,
+  .filter-bar .el-date-editor,
+  .filter-bar .el-input {
+    width: 100% !important;
   }
 }

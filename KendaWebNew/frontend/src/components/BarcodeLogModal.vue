@@ -2,11 +2,17 @@
   <el-dialog
     :model-value="modelValue"
     @update:model-value="$emit('update:modelValue', $event)"
-    title="Barcode Log - Bồn hóa chất"
-    width="80%"
+    width="70%"
     :close-on-click-modal="false"
     top="5vh"
+    :show-close="true"
   >
+    <template #header>
+      <div class="modal-header">
+        <span>Barcode Log — Bồn hóa chất</span>
+      </div>
+    </template>
+
     <div class="modal-body">
       <el-table
         :data="data"
@@ -14,20 +20,15 @@
         stripe
         v-loading="loading"
         style="width: 100%"
-        :header-cell-style="{ backgroundColor: '#4a6fa5', color: 'white', textAlign: 'center', fontWeight: 'bold' }"
-        :cell-style="{ textAlign: 'center', fontWeight: 'bold', fontFamily: 'Arial', fontSize: '14px' }"
+        empty-text="Không có dữ liệu"
       >
-        <el-table-column prop="scanState" label="Trạng thái" width="120" />
-        <el-table-column prop="equipCode" label="Máy" width="80" />
+        <el-table-column prop="scanState" label="Trạng thái" width="110" align="center" />
+        <el-table-column prop="equipCode" label="Máy" width="70" align="center" />
         <el-table-column prop="material" label="Vật liệu" min-width="150" />
         <el-table-column prop="scanBar" label="Scan Bar" width="200" />
-        <el-table-column prop="scanTime" label="Thời gian quét" width="200" />
-        <el-table-column prop="bin" label="Bồn" width="80" />
+        <el-table-column prop="scanTime" label="Thời gian quét" width="190" />
+        <el-table-column prop="bin" label="Bồn" width="70" align="center" />
       </el-table>
-
-      <div v-if="data.length === 0 && !loading" style="text-align: center; padding: 20px; color: #999;">
-        Không có dữ liệu
-      </div>
     </div>
   </el-dialog>
 </template>
