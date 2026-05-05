@@ -14,15 +14,18 @@ public class SanLuongService : ISanLuongService
     private readonly ISanLuongRepository _repo;
     private readonly IMachineRouter _machineRouter;
     private readonly IDbConnectionFactory _dbFactory;
+    private readonly ILogger<SanLuongService> _logger;
 
     public SanLuongService(
         ISanLuongRepository repo,
         IMachineRouter machineRouter,
-        IDbConnectionFactory dbFactory)
+        IDbConnectionFactory dbFactory,
+        ILogger<SanLuongService> logger)
     {
         _repo = repo;
         _machineRouter = machineRouter;
         _dbFactory = dbFactory;
+        _logger = logger;
     }
 
     public async Task<ApiResponse<List<SanLuongDto>>> GetSanLuongAsync(SanLuongRequest request)
@@ -42,9 +45,21 @@ public class SanLuongService : ISanLuongService
 
         var mfnsConnStr = _dbFactory.CreateMfnsConnection(ip).ConnectionString;
 
-        var prdebeData = await _repo.GetPrdebeDataAsync(
-            request.FromDay, request.ToDay, request.May, request.MaKeoTimKiem);
-        var prdebeList = prdebeData.ToList();
+        _logger.LogInformation("[GetSanLuongAsync] may={May}, fromDay={FromDay}, toDay={ToDay}, maKeo={MaKeo}",
+            request.May, request.FromDay, request.ToDay, request.MaKeoTimKiem);
+
+        List<dynamic> prdebeList;
+        try
+        {
+            var prdebeData = await _repo.GetPrdebeDataAsync(
+                request.FromDay, request.ToDay, request.May, request.MaKeoTimKiem);
+            prdebeList = prdebeData.ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "[GetSanLuongAsync] Lỗi kết nối ERP database");
+            return ApiResponse<List<SanLuongDto>>.Fail($"Lỗi kết nối database: {ex.Message}");
+        }
 
         if (prdebeList.Count == 0)
             return ApiResponse<List<SanLuongDto>>.Fail($"Không có dữ liệu máy {request.May}");

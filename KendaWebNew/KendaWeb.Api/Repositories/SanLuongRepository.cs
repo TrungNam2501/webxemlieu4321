@@ -13,10 +13,12 @@ public interface ISanLuongRepository
 public class SanLuongRepository : ISanLuongRepository
 {
     private readonly IDbConnectionFactory _dbFactory;
+    private readonly ILogger<SanLuongRepository> _logger;
 
-    public SanLuongRepository(IDbConnectionFactory dbFactory)
+    public SanLuongRepository(IDbConnectionFactory dbFactory, ILogger<SanLuongRepository> logger)
     {
         _dbFactory = dbFactory;
+        _logger = logger;
     }
 
     public async Task<IEnumerable<dynamic>> GetPrdebeDataAsync(
@@ -39,14 +41,33 @@ public class SanLuongRepository : ISanLuongRepository
 
         sql += " GROUP BY mesid, machno, partno, slipno;";
 
-        using var conn = _dbFactory.CreateErpConnection();
-        return await conn.QueryAsync(sql, new
+        var parameters = new
         {
             FromDay = fromDay1,
             ToDay = toDay1,
             MayPattern = $"%{may}",
             MaKeoPattern = $"%{maKeo}%"
-        });
+        };
+
+        _logger.LogInformation("[GetPrdebeDataAsync] SQL: {Sql}", sql);
+        _logger.LogInformation("[GetPrdebeDataAsync] Params: FromDay={FromDay}, ToDay={ToDay}, MayPattern={MayPattern}, MaKeoPattern={MaKeoPattern}",
+            fromDay1, toDay1, $"%{may}", $"%{maKeo}%");
+
+        using var conn = _dbFactory.CreateErpConnection();
+        _logger.LogInformation("[GetPrdebeDataAsync] ConnectionString: {ConnStr}",
+            conn.ConnectionString?.Replace("Password=", "Password=***"));
+
+        try
+        {
+            var result = (await conn.QueryAsync(sql, parameters)).ToList();
+            _logger.LogInformation("[GetPrdebeDataAsync] Result count: {Count}", result.Count);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "[GetPrdebeDataAsync] Query failed");
+            throw;
+        }
     }
 
     public async Task<IEnumerable<dynamic>> GetTieuChuanDataAsync(
