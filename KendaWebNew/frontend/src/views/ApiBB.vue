@@ -338,29 +338,40 @@ async function handleXemInTem(row) {
 async function handleDoNguoc(barcode) {
   if (!barcode) return
 
-  doNguocLoading.value = true
-  showDoNguoc.value = true
+  const prefix2 = barcode.substring(0, 2)
+  const prefix1 = barcode.substring(0, 1)
 
-  const prefix = barcode.substring(0, 2)
-
-  try {
-    if (prefix === 'RL') {
-      doNguocType.value = 'rl'
-      const { data } = await doNguocApi.getDoNguocRL(barcode)
-      doNguocData.value = data.success ? data.data : []
-      if (!data.success) ElMessage.error(data.message)
-    } else {
-      doNguocType.value = 'rb'
-      const { data } = await doNguocApi.getDoNguocRB(barcode)
-      doNguocData.value = data.success ? data.data : []
-      if (!data.success) ElMessage.error(data.message)
-    }
-  } catch (err) {
-    ElMessage.error(err.response?.data?.message || 'Lỗi!')
-    doNguocData.value = []
-  } finally {
-    doNguocLoading.value = false
+  if (prefix1 === 'V') {
+    await handleXemHoaChat(barcode)
+    return
   }
+
+  if (prefix2 === 'RL' || prefix2 === 'RB' || prefix2 === 'RD' || prefix2 === 'RC') {
+    doNguocLoading.value = true
+    showDoNguoc.value = true
+
+    try {
+      if (prefix2 === 'RL') {
+        doNguocType.value = 'rl'
+        const { data } = await doNguocApi.getDoNguocRL(barcode)
+        doNguocData.value = data.success ? data.data : []
+        if (!data.success) ElMessage.error(data.message)
+      } else {
+        doNguocType.value = 'rb'
+        const { data } = await doNguocApi.getDoNguocRB(barcode)
+        doNguocData.value = data.success ? data.data : []
+        if (!data.success) ElMessage.error(data.message)
+      }
+    } catch (err) {
+      ElMessage.error(err.response?.data?.message || 'Lỗi!')
+      doNguocData.value = []
+    } finally {
+      doNguocLoading.value = false
+    }
+    return
+  }
+
+  ElMessage.info('Barcode này không hỗ trợ dò ngược')
 }
 
 async function handleXemHoaChat(barcode) {
