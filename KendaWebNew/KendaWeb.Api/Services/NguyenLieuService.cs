@@ -46,7 +46,11 @@ public class NguyenLieuService : INguyenLieuService
             return ApiResponse<List<NguyenLieuDto>>.Fail(
                 "Mã mes này chưa kết thúc hoặc đánh tay, không thể xem dữ liệu quét tem!");
 
-        var result = rawData.Select(r => MapToNguyenLieuDto(r)).ToList();
+        var result = new List<NguyenLieuDto>();
+        foreach (var r in rawData)
+        {
+            result.Add(MapToNguyenLieuDto(r));
+        }
 
         // Replace material names for codes starting with '60'
         var materialNames = (await _repo.GetMaterialNamesAsync(connStr, "60")).ToList();
@@ -61,7 +65,7 @@ public class NguyenLieuService : INguyenLieuService
 
         foreach (var item in result)
         {
-            if (nameMap.TryGetValue(item.MaterCode ?? "", out var name))
+            if (nameMap.TryGetValue(item.MaterCode ?? "", out string? name))
                 item.MaterName = name;
         }
 
