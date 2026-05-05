@@ -80,7 +80,11 @@ public class DoNguocService : IDoNguocService
 
         var rawData = (await _nguyenLieuRepo.GetWeighDataWithBarcodeAsync(connStr, planId.Trim())).ToList();
 
-        var result = rawData.Select(r => MapToNguyenLieuDto(r)).ToList();
+        var result = new List<NguyenLieuDto>();
+        foreach (var r in rawData)
+        {
+            result.Add(MapToNguyenLieuDto(r));
+        }
 
         // Replace material names for '60%' codes
         var materialNames = (await _nguyenLieuRepo.GetMaterialNamesAsync(connStr, "60")).ToList();
@@ -95,7 +99,7 @@ public class DoNguocService : IDoNguocService
 
         foreach (var item in result)
         {
-            if (nameMap.TryGetValue(item.MaterCode ?? "", out var name))
+            if (nameMap.TryGetValue(item.MaterCode ?? "", out string? name))
                 item.MaterName = name;
         }
 
