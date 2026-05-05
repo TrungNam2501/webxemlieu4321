@@ -49,13 +49,10 @@ public class SanLuongRepository : ISanLuongRepository
             MaKeoPattern = $"%{maKeo}%"
         };
 
-        _logger.LogInformation("[GetPrdebeDataAsync] SQL: {Sql}", sql);
-        _logger.LogInformation("[GetPrdebeDataAsync] Params: FromDay={FromDay}, ToDay={ToDay}, MayPattern={MayPattern}, MaKeoPattern={MaKeoPattern}",
-            fromDay1, toDay1, $"%{may}", $"%{maKeo}%");
+        _logger.LogInformation("[GetPrdebeDataAsync] Params: FromDay={FromDay}, ToDay={ToDay}, MayPattern={MayPattern}",
+            fromDay1, toDay1, $"%{may}");
 
         using var conn = _dbFactory.CreateErpConnection();
-        _logger.LogInformation("[GetPrdebeDataAsync] ConnectionString: {ConnStr}",
-            conn.ConnectionString?.Replace("Password=", "Password=***"));
 
         try
         {
