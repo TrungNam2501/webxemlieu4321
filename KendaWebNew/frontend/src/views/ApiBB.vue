@@ -1,84 +1,124 @@
 <template>
   <div class="page-container">
-    <!-- Filter Bar -->
-    <div class="filter-bar">
-      <span class="page-title">Mes YAML:</span>
-
-      <el-select v-model="selectedMay" placeholder="----Chọn máy----" style="width: 150px">
-        <el-option label="----Chọn máy----" value="" />
-        <el-option v-for="m in machines" :key="m.value" :label="m.label" :value="m.value" />
-      </el-select>
-
-      <el-date-picker
-        v-model="fromDay"
-        type="date"
-        placeholder="---Từ ngày---"
-        format="YYYY-MM-DD"
-        value-format="YYYY-MM-DD"
-        style="width: 160px"
-      />
-
-      <el-date-picker
-        v-model="toDay"
-        type="date"
-        placeholder="---Đến ngày---"
-        format="YYYY-MM-DD"
-        value-format="YYYY-MM-DD"
-        style="width: 160px"
-      />
-
-      <el-button type="danger" @click="handleXemLieu" :loading="loading">Xem liệu</el-button>
-
-      <el-input
-        v-model="searchText"
-        placeholder="Nhập mã keo tìm kiếm"
-        style="width: 200px"
-        clearable
-      />
-
-      <el-button type="primary" @click="handleTimKiem" :loading="loading">Tìm kiếm</el-button>
-
-      <el-button type="success" @click="handleExportExcel" :loading="exporting">Xuất Excel</el-button>
+    <!-- Page Header -->
+    <div class="page-header">
+      <el-icon :size="28" color="#2563eb"><Monitor /></el-icon>
+      <div>
+        <span class="page-title">Quản lý sản lượng BB</span>
+        <span class="page-subtitle">&nbsp;&mdash;&nbsp;Theo dõi &amp; tra cứu dữ liệu sản xuất</span>
+      </div>
     </div>
 
-    <!-- Main Table -->
-    <div class="table-container">
-      <el-table
-        :data="sanLuongData"
-        border
-        stripe
-        style="width: 100%"
-        :header-cell-style="{ backgroundColor: '#4a6fa5', color: 'white', textAlign: 'center', fontWeight: 'bold' }"
-        :cell-style="{ textAlign: 'center', fontWeight: 'bold', fontFamily: 'Arial', fontSize: '16px' }"
-      >
-        <el-table-column label="Xem nguyên liệu quét vào" width="120" align="center">
-          <template #default="{ row }">
-            <el-button size="small" type="primary" @click="handleXemNguyenLieu(row)">
-              <el-icon><View /></el-icon>
-            </el-button>
-          </template>
-        </el-table-column>
-        <el-table-column prop="maMesid" label="Mã mesid" />
-        <el-table-column prop="soMay" label="Số máy" width="80" />
-        <el-table-column prop="tenKeo" label="Tên keo" />
-        <el-table-column prop="soLo" label="Số lô" />
-        <el-table-column prop="soMeDieuDong" label="Số mẻ điều động" width="100" />
-        <el-table-column prop="soMeHoanThanh" label="Số mẻ hoàn thành" width="100" />
-        <el-table-column prop="soKyTieuChuan" label="Số ký tiêu chuẩn" width="100" />
-        <el-table-column prop="soKyDaQuetTem" label="Số ký đã quét tem" width="100" />
-        <el-table-column prop="soKyHoanThanh" label="Số ký hoàn thành" width="100" />
-        <el-table-column prop="soKyChenhLech" label="Số ký chênh lệch" width="100" />
-        <el-table-column label="Xem dữ liệu in tem" width="120" align="center">
-          <template #default="{ row }">
-            <el-button size="small" type="success" @click="handleXemInTem(row)">
-              <el-icon><Document /></el-icon>
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+    <!-- Filter Card -->
+    <div class="filter-card">
+      <div class="filter-bar">
+        <div class="filter-group">
+          <span class="filter-label">Máy</span>
+          <el-select v-model="selectedMay" placeholder="Chọn máy" style="width: 140px">
+            <el-option v-for="m in machines" :key="m.value" :label="m.label" :value="m.value" />
+          </el-select>
+        </div>
+
+        <div class="filter-divider" />
+
+        <div class="filter-group">
+          <span class="filter-label">Từ</span>
+          <el-date-picker
+            v-model="fromDay"
+            type="date"
+            placeholder="Từ ngày"
+            format="YYYY-MM-DD"
+            value-format="YYYY-MM-DD"
+            style="width: 160px"
+          />
+        </div>
+
+        <div class="filter-group">
+          <span class="filter-label">Đến</span>
+          <el-date-picker
+            v-model="toDay"
+            type="date"
+            placeholder="Đến ngày"
+            format="YYYY-MM-DD"
+            value-format="YYYY-MM-DD"
+            style="width: 160px"
+          />
+        </div>
+
+        <el-button type="danger" @click="handleXemLieu" :loading="loading">
+          <el-icon><Search /></el-icon>&nbsp;Xem liệu
+        </el-button>
+
+        <div class="filter-divider" />
+
+        <div class="filter-group">
+          <el-input
+            v-model="searchText"
+            placeholder="Nhập mã keo tìm kiếm..."
+            style="width: 220px"
+            clearable
+            :prefix-icon="Search"
+          />
+          <el-button type="primary" @click="handleTimKiem" :loading="loading">Tìm kiếm</el-button>
+        </div>
+
+        <el-button type="success" @click="handleExportExcel" :loading="exporting" plain>
+          <el-icon><Download /></el-icon>&nbsp;Xuất Excel
+        </el-button>
+      </div>
     </div>
 
-    <!-- NguyenLieu Modal -->
+    <!-- Table Card -->
+    <div class="table-card">
+      <div class="table-toolbar" v-if="sanLuongData.length > 0">
+        <span class="count-badge">
+          Hiển thị <strong>{{ sanLuongData.length }}</strong> dòng
+        </span>
+      </div>
+
+      <div class="table-container">
+        <el-table
+          :data="sanLuongData"
+          border
+          stripe
+          style="width: 100%"
+          empty-text="Chọn máy và ngày rồi bấm Xem liệu"
+        >
+          <el-table-column label="NL" width="70" align="center" fixed="left">
+            <template #default="{ row }">
+              <el-button class="action-btn" type="primary" @click="handleXemNguyenLieu(row)">
+                <el-icon><View /></el-icon>
+              </el-button>
+            </template>
+          </el-table-column>
+          <el-table-column prop="maMesid" label="Mã MES ID" min-width="140" />
+          <el-table-column prop="soMay" label="Máy" width="70" align="center" />
+          <el-table-column prop="tenKeo" label="Tên keo" min-width="120" />
+          <el-table-column prop="soLo" label="Số lô" min-width="100" />
+          <el-table-column prop="soMeDieuDong" label="Mẻ ĐĐ" width="80" align="center" />
+          <el-table-column prop="soMeHoanThanh" label="Mẻ HT" width="80" align="center" />
+          <el-table-column prop="soKyTieuChuan" label="Kg TC" width="80" align="right" />
+          <el-table-column prop="soKyDaQuetTem" label="Kg quét" width="80" align="right" />
+          <el-table-column prop="soKyHoanThanh" label="Kg HT" width="80" align="right" />
+          <el-table-column prop="soKyChenhLech" label="Chênh lệch" width="95" align="right">
+            <template #default="{ row }">
+              <span :style="{ color: Number(row.soKyChenhLech) < 0 ? '#ef4444' : '#10b981', fontWeight: 600 }">
+                {{ row.soKyChenhLech }}
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column label="In tem" width="70" align="center" fixed="right">
+            <template #default="{ row }">
+              <el-button class="action-btn" type="success" @click="handleXemInTem(row)">
+                <el-icon><Document /></el-icon>
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </div>
+
+    <!-- Modals -->
     <NguyenLieuModal
       v-model="showNguyenLieu"
       :data="nguyenLieuData"
@@ -87,7 +127,6 @@
       @export-excel="handleExportNguyenLieu"
     />
 
-    <!-- InTem Modal -->
     <InTemModal
       v-model="showInTem"
       :data="inTemData"
@@ -96,7 +135,6 @@
       @export-excel="handleExportInTem"
     />
 
-    <!-- DoNguoc Modal -->
     <DoNguocModal
       v-model="showDoNguoc"
       :data="doNguocData"
@@ -106,7 +144,6 @@
       @export-excel="handleExportDoNguoc"
     />
 
-    <!-- HoaChat Modal -->
     <HoaChatModal
       v-model="showHoaChat"
       :data="hoaChatData"
@@ -115,7 +152,6 @@
       @export-excel="handleExportHoaChat"
     />
 
-    <!-- BarcodeLog Modal -->
     <BarcodeLogModal
       v-model="showBarcodeLog"
       :data="barcodeLogData"
@@ -127,6 +163,7 @@
 <script setup>
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
+import { Search, Download, View, Document, Monitor } from '@element-plus/icons-vue'
 import { sanLuongApi, nguyenLieuApi, inTemApi, doNguocApi, hoaChatApi } from '../api'
 import { useExcelExport } from '../composables/useExcelExport'
 import NguyenLieuModal from '../components/NguyenLieuModal.vue'

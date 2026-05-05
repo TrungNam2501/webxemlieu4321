@@ -2,15 +2,17 @@
   <el-dialog
     :model-value="modelValue"
     @update:model-value="$emit('update:modelValue', $event)"
-    title="Nguyên liệu quét vào"
     width="95%"
     :close-on-click-modal="false"
     top="2vh"
+    :show-close="true"
   >
     <template #header>
       <div class="modal-header">
         <span>Nguyên liệu quét vào</span>
-        <el-button type="success" @click="$emit('export-excel')">Xuất Excel</el-button>
+        <el-button type="success" size="small" @click="$emit('export-excel')" plain>
+          <el-icon><Download /></el-icon>&nbsp;Xuất Excel
+        </el-button>
       </div>
     </template>
 
@@ -21,23 +23,22 @@
         stripe
         v-loading="loading"
         style="width: 100%"
-        :header-cell-style="{ backgroundColor: '#4a6fa5', color: 'white', textAlign: 'center', fontWeight: 'bold' }"
-        :cell-style="{ textAlign: 'center', fontWeight: 'bold', fontFamily: 'Arial', fontSize: '14px' }"
+        empty-text="Không có dữ liệu"
       >
-        <el-table-column prop="saveTime" label="Thời gian quét" width="180" />
-        <el-table-column prop="equipId" label="Tên máy" width="80" />
-        <el-table-column prop="materCode" label="Mã nguyên liệu" width="120" />
+        <el-table-column prop="saveTime" label="Thời gian quét" width="170" />
+        <el-table-column prop="equipId" label="Máy" width="70" align="center" />
+        <el-table-column prop="materCode" label="Mã NL" width="110" />
         <el-table-column prop="materName" label="Tên nguyên liệu" min-width="150" />
-        <el-table-column prop="setNum" label="Số mẻ điều động" width="100" />
-        <el-table-column prop="serialNum" label="Số mẻ hoàn thành" width="100" />
-        <el-table-column prop="realWeight" label="Số ký quét" width="100" />
+        <el-table-column prop="setNum" label="Mẻ ĐĐ" width="80" align="center" />
+        <el-table-column prop="serialNum" label="Mẻ HT" width="80" align="center" />
+        <el-table-column prop="realWeight" label="Kg quét" width="90" align="right" />
         <el-table-column prop="materBarcode" label="Tem quét" width="160" />
         <el-table-column prop="batchNo" label="Số lô" width="130" />
-        <el-table-column label="Xem chi tiết" width="100" align="center">
+        <el-table-column label="Chi tiết" width="80" align="center">
           <template #default="{ row }">
             <el-button
               v-if="row.materBarcode"
-              size="small"
+              class="action-btn"
               type="warning"
               @click="$emit('view-detail', row.materBarcode)"
             >
@@ -51,6 +52,8 @@
 </template>
 
 <script setup>
+import { Download, View } from '@element-plus/icons-vue'
+
 defineProps({
   modelValue: Boolean,
   data: { type: Array, default: () => [] },

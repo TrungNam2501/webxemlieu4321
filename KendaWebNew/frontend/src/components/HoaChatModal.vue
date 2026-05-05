@@ -2,15 +2,17 @@
   <el-dialog
     :model-value="modelValue"
     @update:model-value="$emit('update:modelValue', $event)"
-    title="Hóa chất CWSS"
     width="95%"
     :close-on-click-modal="false"
     top="2vh"
+    :show-close="true"
   >
     <template #header>
       <div class="modal-header">
         <span>Hóa chất CWSS</span>
-        <el-button type="success" @click="$emit('export-excel')">Xuất Excel</el-button>
+        <el-button type="success" size="small" @click="$emit('export-excel')" plain>
+          <el-icon><Download /></el-icon>&nbsp;Xuất Excel
+        </el-button>
       </div>
     </template>
 
@@ -21,29 +23,28 @@
         stripe
         v-loading="loading"
         style="width: 100%"
-        :header-cell-style="{ backgroundColor: '#4a6fa5', color: 'white', textAlign: 'center', fontWeight: 'bold' }"
-        :cell-style="{ textAlign: 'center', fontWeight: 'bold', fontFamily: 'Arial', fontSize: '14px' }"
+        empty-text="Không có dữ liệu"
       >
-        <el-table-column prop="dosingId" label="Dosing ID" width="100" />
-        <el-table-column prop="planId" label="Plan ID" width="150" />
-        <el-table-column prop="equipCode" label="Máy" width="80" />
-        <el-table-column prop="serialNum" label="STT" width="60" />
-        <el-table-column prop="weightId" label="Weight ID" width="80" />
-        <el-table-column prop="materialCode" label="Mã vật liệu" width="100" />
-        <el-table-column prop="materialName" label="Tên vật liệu" min-width="150" />
-        <el-table-column prop="realWeight" label="Cân thực" width="90" />
-        <el-table-column prop="realError" label="Sai số" width="80" />
-        <el-table-column prop="overWeight" label="Quá cân" width="80" />
-        <el-table-column prop="overError" label="Quá sai số" width="80" />
-        <el-table-column prop="wasteTime" label="Thời gian thải" width="100" />
-        <el-table-column prop="warningSign" label="Cảnh báo" width="80" />
-        <el-table-column prop="weightTime" label="Thời gian cân" width="180" />
-        <el-table-column prop="batchNumber" label="Batch Number" width="130" />
-        <el-table-column prop="recipeCode" label="Recipe Code" width="120" />
-        <el-table-column label="Xem bồn" width="80" align="center">
+        <el-table-column prop="dosingId" label="Dosing" width="80" align="center" />
+        <el-table-column prop="planId" label="Plan ID" width="140" />
+        <el-table-column prop="equipCode" label="Máy" width="70" align="center" />
+        <el-table-column prop="serialNum" label="STT" width="55" align="center" />
+        <el-table-column prop="weightId" label="Weight" width="70" align="center" />
+        <el-table-column prop="materialCode" label="Mã VL" width="90" />
+        <el-table-column prop="materialName" label="Tên vật liệu" min-width="140" />
+        <el-table-column prop="realWeight" label="Cân thực" width="85" align="right" />
+        <el-table-column prop="realError" label="Sai số" width="75" align="right" />
+        <el-table-column prop="overWeight" label="Quá cân" width="80" align="right" />
+        <el-table-column prop="overError" label="Quá SS" width="75" align="right" />
+        <el-table-column prop="wasteTime" label="TG thải" width="90" />
+        <el-table-column prop="warningSign" label="CB" width="50" align="center" />
+        <el-table-column prop="weightTime" label="Thời gian cân" width="165" />
+        <el-table-column prop="batchNumber" label="Batch" width="120" />
+        <el-table-column prop="recipeCode" label="Recipe" width="110" />
+        <el-table-column label="Bồn" width="65" align="center">
           <template #default="{ row }">
             <el-button
-              size="small"
+              class="action-btn"
               type="primary"
               @click="$emit('view-barcode-log', {
                 equipCode: row.equipCode,
@@ -57,15 +58,13 @@
           </template>
         </el-table-column>
       </el-table>
-
-      <div v-if="data.length === 0 && !loading" style="text-align: center; padding: 20px; color: #999;">
-        Không có dữ liệu
-      </div>
     </div>
   </el-dialog>
 </template>
 
 <script setup>
+import { Download, View } from '@element-plus/icons-vue'
+
 defineProps({
   modelValue: Boolean,
   data: { type: Array, default: () => [] },
