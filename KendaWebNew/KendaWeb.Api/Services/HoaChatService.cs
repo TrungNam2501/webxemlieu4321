@@ -49,10 +49,9 @@ public class HoaChatService : IHoaChatService
         if (data.Count == 0)
             return ApiResponse<List<HoaChatDto>>.Fail("Không có dữ liệu");
 
-        // Map equipment display names
         foreach (var item in data)
         {
-            item.EquipCode = MapEquipCodeDisplay(item.EquipCode ?? "");
+            item.EquipDisplay = MapEquipCodeDisplay(item.EquipCode ?? "");
         }
 
         return ApiResponse<List<HoaChatDto>>.Ok(data);

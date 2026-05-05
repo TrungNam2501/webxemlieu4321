@@ -5,6 +5,7 @@ public class HoaChatDto
     public string? DosingId { get; set; }
     public string? PlanId { get; set; }
     public string? EquipCode { get; set; }
+    public string? EquipDisplay { get; set; }
     public int SerialNum { get; set; }
     public string? WeightId { get; set; }
     public string? MaterialCode { get; set; }
