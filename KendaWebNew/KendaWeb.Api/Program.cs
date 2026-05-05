@@ -1,6 +1,12 @@
+using System.Data;
 using KendaWeb.Api.Configuration;
 using KendaWeb.Api.Repositories;
 using KendaWeb.Api.Services;
+
+// Dapper mặc định gửi string C# dưới dạng nvarchar (Unicode).
+// DB cũ dùng varchar (ANSI) cho tất cả cột → so sánh nvarchar vs varchar
+// có thể trả kết quả sai. Ép Dapper gửi varchar cho phù hợp với DB.
+Dapper.SqlMapper.AddTypeMap(typeof(string), DbType.AnsiString);
 
 var builder = WebApplication.CreateBuilder(args);
 
