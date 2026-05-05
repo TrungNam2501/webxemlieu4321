@@ -80,27 +80,18 @@ public class DoNguocService : IDoNguocService
 
         var rawData = (await _nguyenLieuRepo.GetWeighDataWithBarcodeAsync(connStr, planId.Trim())).ToList();
 
-        var result = rawData.Select(r => new NguyenLieuDto
-        {
-            SaveTime = r.SaveTime?.ToString(),
-            RecipeName = r.Recipe_Name?.ToString(),
-            SetNum = int.TryParse(r.Set_Num?.ToString(), out var sn) ? sn : 0,
-            SerialNum = int.TryParse(r.Serial_Num?.ToString(), out var srn) ? srn : 0,
-            MaterCode = r.Mater_Code?.ToString(),
-            MaterName = r.Mater_Name?.ToString(),
-            MaterBarcode = r.Mater_Barcode?.ToString(),
-            BatchNo = r.batchno?.ToString(),
-            EquipId = r.Equip_ID?.ToString(),
-            RealWeight = decimal.TryParse(r.real_weight?.ToString(), out var rw) ? rw : null,
-            ErrorAllow = decimal.TryParse(r.error_allow?.ToString(), out var ea) ? ea : null,
-        }).ToList();
+        var result = rawData.Select(r => MapToNguyenLieuDto(r)).ToList();
 
         // Replace material names for '60%' codes
         var materialNames = (await _nguyenLieuRepo.GetMaterialNamesAsync(connStr, "60")).ToList();
-        var nameMap = materialNames.ToDictionary(
-            m => m.mater_code?.ToString()?.Trim() ?? "",
-            m => m.mater_name?.ToString()?.Trim() ?? "",
-            StringComparer.OrdinalIgnoreCase);
+        var nameMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var m in materialNames)
+        {
+            string key = m.mater_code?.ToString()?.Trim() ?? "";
+            string val = m.mater_name?.ToString()?.Trim() ?? "";
+            if (!string.IsNullOrEmpty(key))
+                nameMap[key] = val;
+        }
 
         foreach (var item in result)
         {
@@ -117,6 +108,34 @@ public class DoNguocService : IDoNguocService
             .ToList();
 
         return ApiResponse<List<NguyenLieuDto>>.Ok(result);
+    }
+
+    private static NguyenLieuDto MapToNguyenLieuDto(dynamic r)
+    {
+        int setNum = 0;
+        int serialNum = 0;
+        decimal? realWeight = null;
+        decimal? errorAllow = null;
+
+        int.TryParse(r.Set_Num?.ToString(), out setNum);
+        int.TryParse(r.Serial_Num?.ToString(), out serialNum);
+        if (decimal.TryParse(r.real_weight?.ToString(), out decimal rw)) realWeight = rw;
+        if (decimal.TryParse(r.error_allow?.ToString(), out decimal ea)) errorAllow = ea;
+
+        return new NguyenLieuDto
+        {
+            SaveTime = r.SaveTime?.ToString(),
+            RecipeName = r.Recipe_Name?.ToString(),
+            SetNum = setNum,
+            SerialNum = serialNum,
+            MaterCode = r.Mater_Code?.ToString(),
+            MaterName = r.Mater_Name?.ToString(),
+            MaterBarcode = r.Mater_Barcode?.ToString(),
+            BatchNo = r.batchno?.ToString(),
+            EquipId = r.Equip_ID?.ToString(),
+            RealWeight = realWeight,
+            ErrorAllow = errorAllow,
+        };
     }
 
     private async Task AppendOilCoalDataAsync(
@@ -191,6 +210,11 @@ public class DoNguocService : IDoNguocService
                 }
             }
 
+            decimal? realWeight = null;
+            decimal? errorAllow = null;
+            if (decimal.TryParse(row.set_weight?.ToString(), out decimal sw)) realWeight = sw;
+            if (decimal.TryParse(row.error_allow?.ToString(), out decimal ea)) errorAllow = ea;
+
             result.Add(new NguyenLieuDto
             {
                 SaveTime = row.weigh_time?.ToString()?.Trim(),
@@ -202,8 +226,8 @@ public class DoNguocService : IDoNguocService
                 MaterBarcode = materBarcode,
                 BatchNo = batchNo,
                 EquipId = templateItem.EquipId,
-                RealWeight = decimal.TryParse(row.set_weight?.ToString(), out var sw) ? sw : null,
-                ErrorAllow = decimal.TryParse(row.error_allow?.ToString(), out var ea) ? ea : null,
+                RealWeight = realWeight,
+                ErrorAllow = errorAllow,
             });
         }
     }
