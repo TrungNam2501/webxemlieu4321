@@ -27,7 +27,7 @@
       >
         <el-table-column prop="dosingId" label="Dosing" width="80" align="center" />
         <el-table-column prop="planId" label="Plan ID" width="140" />
-        <el-table-column prop="equipCode" label="Máy" width="70" align="center" />
+        <el-table-column prop="equipDisplay" label="Máy" width="90" align="center" />
         <el-table-column prop="serialNum" label="STT" width="55" align="center" />
         <el-table-column prop="weightId" label="Weight" width="70" align="center" />
         <el-table-column prop="materialCode" label="Mã VL" width="90" />
