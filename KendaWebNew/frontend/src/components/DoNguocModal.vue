@@ -100,14 +100,4 @@ defineProps({
 defineEmits(['update:modelValue', 'view-hoachat', 'trace-barcode', 'export-excel'])
 </script>
 
-<style scoped>
-.barcode-link {
-  color: var(--primary, #2563eb);
-  cursor: pointer;
-  text-decoration: underline;
-  font-weight: 600;
-}
-.barcode-link:hover {
-  color: var(--primary-dark, #1d4ed8);
-}
-</style>
+
