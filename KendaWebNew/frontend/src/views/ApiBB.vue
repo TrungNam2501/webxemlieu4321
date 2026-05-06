@@ -132,6 +132,7 @@
       :data-type="doNguocType"
       :loading="doNguocLoading"
       @view-hoachat="handleXemHoaChat"
+      @trace-barcode="handleDoNguoc"
       @export-excel="handleExportDoNguoc"
     />
 

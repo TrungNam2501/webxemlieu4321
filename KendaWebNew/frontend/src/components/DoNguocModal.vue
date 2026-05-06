@@ -59,7 +59,16 @@
         <el-table-column prop="setNum" label="Mẻ ĐĐ" width="80" align="center" />
         <el-table-column prop="serialNum" label="Mẻ HT" width="80" align="center" />
         <el-table-column prop="realWeight" label="Kg quét" width="90" align="right" />
-        <el-table-column prop="materBarcode" label="Tem quét" width="160" />
+        <el-table-column prop="materBarcode" label="Tem quét" width="160">
+          <template #default="{ row }">
+            <a
+              v-if="row.materBarcode && (row.materBarcode.startsWith('RC') || row.materBarcode.startsWith('RB') || row.materBarcode.startsWith('RD') || row.materBarcode.startsWith('RL'))"
+              class="barcode-link"
+              @click="$emit('trace-barcode', row.materBarcode)"
+            >{{ row.materBarcode }}</a>
+            <span v-else>{{ row.materBarcode }}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="batchNo" label="Số lô" width="130" />
         <el-table-column label="HC" width="70" align="center">
           <template #default="{ row }">
@@ -88,5 +97,17 @@ defineProps({
   loading: Boolean
 })
 
-defineEmits(['update:modelValue', 'view-hoachat', 'export-excel'])
+defineEmits(['update:modelValue', 'view-hoachat', 'trace-barcode', 'export-excel'])
 </script>
+
+<style scoped>
+.barcode-link {
+  color: var(--primary, #2563eb);
+  cursor: pointer;
+  text-decoration: underline;
+  font-weight: 600;
+}
+.barcode-link:hover {
+  color: var(--primary-dark, #1d4ed8);
+}
+</style>
