@@ -25,15 +25,15 @@
         style="width: 100%"
         empty-text="Không có dữ liệu"
       >
-        <el-table-column prop="saveTime" label="Thời gian quét" width="170" />
-        <el-table-column prop="equipId" label="Máy" width="70" align="center" />
-        <el-table-column prop="materCode" label="Mã NL" width="110" />
-        <el-table-column prop="materName" label="Tên nguyên liệu" min-width="150" />
-        <el-table-column prop="setNum" label="Mẻ ĐĐ" width="80" align="center" />
-        <el-table-column prop="serialNum" label="Mẻ HT" width="80" align="center" />
-        <el-table-column prop="realWeight" label="Kg quét" width="90" align="right" />
-        <el-table-column prop="materBarcode" label="Tem quét" width="160" />
-        <el-table-column prop="batchNo" label="Số lô" width="130" />
+        <el-table-column prop="saveTime" label="Thời gian quét" width="145" />
+        <el-table-column prop="equipId" label="Máy" width="55" align="center" />
+        <el-table-column prop="materCode" label="Mã NL" width="95" />
+        <el-table-column prop="materName" label="Tên nguyên liệu" width="110" />
+        <el-table-column prop="setNum" label="Mẻ ĐĐ" width="65" align="center" />
+        <el-table-column prop="serialNum" label="Mẻ HT" width="65" align="center" />
+        <el-table-column prop="realWeight" label="Kg quét" width="80" align="right" />
+        <el-table-column prop="materBarcode" label="Tem quét" min-width="155" show-overflow-tooltip />
+        <el-table-column prop="batchNo" label="Số lô" width="100" />
         <el-table-column label="Chi tiết" width="80" align="center">
           <template #default="{ row }">
             <el-button
