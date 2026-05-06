@@ -60,23 +60,22 @@
         <el-table-column prop="serialNum" label="Mẻ HT" width="65" align="center" />
         <el-table-column prop="realWeight" label="Kg quét" width="80" align="right" />
         <el-table-column label="Tem quét" min-width="155">
-          <template #default="{ row }">
+          <template #default="scope">
             <a
-              v-if="row.materBarcode && (row.materBarcode.startsWith('RC') || row.materBarcode.startsWith('RB') || row.materBarcode.startsWith('RD') || row.materBarcode.startsWith('RL'))"
+              v-if="scope.row.materBarcode"
               class="barcode-link"
-              @click="$emit('trace-barcode', row.materBarcode)"
-            >{{ row.materBarcode }}</a>
-            <span v-else>{{ row.materBarcode }}</span>
+              @click="$emit('trace-barcode', scope.row.materBarcode)"
+            >{{ scope.row.materBarcode }}</a>
           </template>
         </el-table-column>
         <el-table-column prop="batchNo" label="Số lô" width="100" />
         <el-table-column label="HC" width="70" align="center">
-          <template #default="{ row }">
+          <template #default="scope">
             <el-button
-              v-if="row.materBarcode && row.materBarcode.startsWith('V')"
+              v-if="scope.row.materBarcode && String(scope.row.materBarcode).charAt(0) === 'V'"
               class="action-btn"
               type="info"
-              @click="$emit('view-hoachat', row.materBarcode)"
+              @click="$emit('view-hoachat', scope.row.materBarcode)"
             >
               <el-icon><View /></el-icon>
             </el-button>
