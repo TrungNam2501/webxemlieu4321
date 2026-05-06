@@ -59,7 +59,7 @@
         <el-table-column prop="setNum" label="Mẻ ĐĐ" width="65" align="center" />
         <el-table-column prop="serialNum" label="Mẻ HT" width="65" align="center" />
         <el-table-column prop="realWeight" label="Kg quét" width="80" align="right" />
-        <el-table-column prop="materBarcode" label="Tem quét" min-width="155">
+        <el-table-column label="Tem quét" min-width="155">
           <template #default="{ row }">
             <a
               v-if="row.materBarcode && (row.materBarcode.startsWith('RC') || row.materBarcode.startsWith('RB') || row.materBarcode.startsWith('RD') || row.materBarcode.startsWith('RL'))"
