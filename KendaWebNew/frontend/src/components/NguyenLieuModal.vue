@@ -33,22 +33,22 @@
         <el-table-column prop="serialNum" label="Mẻ HT" width="65" align="center" />
         <el-table-column prop="realWeight" label="Kg quét" width="80" align="right" />
         <el-table-column label="Tem quét" min-width="155">
-          <template #default="{ row }">
+          <template #default="scope">
             <a
-              v-if="row.materBarcode"
+              v-if="scope.row.materBarcode"
               class="barcode-link"
-              @click="$emit('view-detail', row.materBarcode)"
-            >{{ row.materBarcode }}</a>
+              @click="$emit('view-detail', scope.row.materBarcode)"
+            >{{ scope.row.materBarcode }}</a>
           </template>
         </el-table-column>
         <el-table-column prop="batchNo" label="Số lô" width="100" />
         <el-table-column label="Chi tiết" width="80" align="center">
-          <template #default="{ row }">
+          <template #default="scope">
             <el-button
-              v-if="row.materBarcode"
+              v-if="scope.row.materBarcode"
               class="action-btn"
               type="warning"
-              @click="$emit('view-detail', row.materBarcode)"
+              @click="$emit('view-detail', scope.row.materBarcode)"
             >
               <el-icon><View /></el-icon>
             </el-button>

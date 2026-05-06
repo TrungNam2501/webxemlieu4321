@@ -416,14 +416,16 @@ body {
 }
 
 /* ── Barcode Link ── */
-.barcode-link {
-  color: var(--primary, #2563eb) !important;
+.el-table .cell .barcode-link,
+.el-table td.el-table__cell .barcode-link {
+  color: #2563eb !important;
   cursor: pointer !important;
   text-decoration: underline !important;
   font-weight: 600 !important;
 }
-.barcode-link:hover {
-  color: var(--primary-dark, #1d4ed8) !important;
+.el-table .cell .barcode-link:hover,
+.el-table td.el-table__cell .barcode-link:hover {
+  color: #1d4ed8 !important;
 }
 
 /* ── Value Cells ── */
