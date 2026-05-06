@@ -30,20 +30,20 @@
         style="width: 100%"
         empty-text="Không có dữ liệu"
       >
-        <el-table-column prop="mesid" label="Mã MES" width="120" />
-        <el-table-column prop="machno" label="Máy" width="70" />
-        <el-table-column prop="daylimt" label="Hạn SD" width="100" />
-        <el-table-column prop="barcode" label="Mã vạch" min-width="130" />
-        <el-table-column prop="slipno" label="Số lô" width="100" />
-        <el-table-column prop="weight" label="KG" width="70" align="right" />
-        <el-table-column prop="prodat" label="Ngày SX" width="100" />
-        <el-table-column prop="effdat" label="Ngày HL" width="100" />
+        <el-table-column prop="mesid" label="Mã MES" min-width="110" show-overflow-tooltip />
+        <el-table-column prop="machno" label="Máy" width="60" align="center" />
+        <el-table-column prop="daylimt" label="Hạn SD" min-width="90" show-overflow-tooltip />
+        <el-table-column prop="barcode" label="Mã vạch" min-width="130" show-overflow-tooltip />
+        <el-table-column prop="slipno" label="Số lô" min-width="90" show-overflow-tooltip />
+        <el-table-column prop="weight" label="KG" width="65" align="right" />
+        <el-table-column prop="prodat" label="Ngày SX" min-width="90" show-overflow-tooltip />
+        <el-table-column prop="effdat" label="Ngày HL" min-width="90" show-overflow-tooltip />
         <el-table-column prop="class" label="Ca" width="45" align="center" />
-        <el-table-column prop="partno" label="Tên keo" min-width="110" />
-        <el-table-column prop="intime" label="TG quét" width="85" />
-        <el-table-column prop="indat" label="Ngày quét" width="100" />
-        <el-table-column prop="usrno" label="Người" width="75" />
-        <el-table-column prop="palletNo" label="Pallet" width="100" />
+        <el-table-column prop="partno" label="Tên keo" min-width="100" show-overflow-tooltip />
+        <el-table-column prop="intime" label="TG quét" min-width="80" show-overflow-tooltip />
+        <el-table-column prop="indat" label="Ngày quét" min-width="90" show-overflow-tooltip />
+        <el-table-column prop="usrno" label="Người" width="70" />
+        <el-table-column prop="palletNo" label="Pallet" min-width="90" show-overflow-tooltip />
         <el-table-column prop="someSx" label="Mẻ" width="50" align="center" />
       </el-table>
     </div>
