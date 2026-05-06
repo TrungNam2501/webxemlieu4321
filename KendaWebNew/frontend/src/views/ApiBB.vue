@@ -1,14 +1,5 @@
 <template>
   <div class="page-container">
-    <!-- Page Header -->
-    <div class="page-header">
-      <el-icon :size="28" color="#2563eb"><Monitor /></el-icon>
-      <div>
-        <span class="page-title">Quản lý sản lượng BB</span>
-        <span class="page-subtitle">&nbsp;&mdash;&nbsp;Theo dõi &amp; tra cứu dữ liệu sản xuất</span>
-      </div>
-    </div>
-
     <!-- Filter Card -->
     <div class="filter-card">
       <div class="filter-bar">
@@ -102,7 +93,7 @@
           <el-table-column prop="soKyHoanThanh" label="Kg HT" width="80" align="right" />
           <el-table-column prop="soKyChenhLech" label="Chênh lệch" width="95" align="right">
             <template #default="{ row }">
-              <span :style="{ color: Number(row.soKyChenhLech) < 0 ? '#ef4444' : '#10b981', fontWeight: 600 }">
+              <span :class="['cell-diff', Number(row.soKyChenhLech) < 0 ? 'cell-negative' : Number(row.soKyChenhLech) > 0 ? 'cell-positive' : 'cell-zero']">
                 {{ row.soKyChenhLech }}
               </span>
             </template>
@@ -163,7 +154,7 @@
 <script setup>
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
-import { Search, Download, View, Document, Monitor } from '@element-plus/icons-vue'
+import { Search, Download, View, Document } from '@element-plus/icons-vue'
 import { sanLuongApi, nguyenLieuApi, inTemApi, doNguocApi, hoaChatApi } from '../api'
 import { useExcelExport } from '../composables/useExcelExport'
 import NguyenLieuModal from '../components/NguyenLieuModal.vue'
@@ -185,9 +176,11 @@ const machines = [
   { label: 'Máy 08', value: '08' },
 ]
 
-const selectedMay = ref('')
-const fromDay = ref('')
-const toDay = ref('')
+const today = new Date().toISOString().slice(0, 10)
+
+const selectedMay = ref('01')
+const fromDay = ref(today)
+const toDay = ref(today)
 const searchText = ref('')
 const loading = ref(false)
 const exporting = ref(false)

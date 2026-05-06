@@ -10,7 +10,11 @@ Dapper.SqlMapper.AddTypeMap(typeof(string), DbType.AnsiString);
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(opts =>
+    {
+        opts.JsonSerializerOptions.Converters.Add(new KendaWeb.Api.Configuration.TrimStringJsonConverter());
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
