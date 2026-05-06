@@ -193,7 +193,12 @@ body {
   color: var(--text-primary) !important;
   border-bottom: 1px solid var(--border-light) !important;
   transition: background-color 0.15s ease;
+}
+
+.el-table .cell {
   white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
 
 .el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell {
