@@ -25,22 +25,22 @@
         style="width: 100%"
         empty-text="Không có dữ liệu"
       >
-        <el-table-column prop="dosingId" label="Dosing" width="80" align="center" />
-        <el-table-column prop="planId" label="Plan ID" width="140" />
-        <el-table-column prop="equipDisplay" label="Máy" width="90" align="center" />
-        <el-table-column prop="serialNum" label="STT" width="55" align="center" />
-        <el-table-column prop="weightId" label="Weight" width="70" align="center" />
-        <el-table-column prop="materialCode" label="Mã VL" width="90" />
-        <el-table-column prop="materialName" label="Tên vật liệu" min-width="140" />
-        <el-table-column prop="realWeight" label="Cân thực" width="85" align="right" />
-        <el-table-column prop="realError" label="Sai số" width="75" align="right" />
-        <el-table-column prop="overWeight" label="Quá cân" width="80" align="right" />
-        <el-table-column prop="overError" label="Quá SS" width="75" align="right" />
-        <el-table-column prop="wasteTime" label="TG thải" width="90" />
-        <el-table-column prop="warningSign" label="CB" width="50" align="center" />
-        <el-table-column prop="weightTime" label="Thời gian cân" width="165" />
-        <el-table-column prop="batchNumber" label="Batch" width="120" />
-        <el-table-column prop="recipeCode" label="Recipe" width="110" />
+        <el-table-column prop="dosingId" label="Dosing" width="70" align="center" />
+        <el-table-column prop="planId" label="Plan ID" width="120" />
+        <el-table-column prop="equipDisplay" label="Máy" width="80" align="center" />
+        <el-table-column prop="serialNum" label="STT" width="50" align="center" />
+        <el-table-column prop="weightId" label="Wt" width="50" align="center" />
+        <el-table-column prop="materialCode" label="Mã VL" width="80" />
+        <el-table-column prop="materialName" label="Tên vật liệu" min-width="120" />
+        <el-table-column prop="realWeight" label="Cân" width="70" align="right" />
+        <el-table-column prop="realError" label="SS" width="65" align="right" />
+        <el-table-column prop="overWeight" label="Q.cân" width="70" align="right" />
+        <el-table-column prop="overError" label="Q.SS" width="65" align="right" />
+        <el-table-column prop="wasteTime" label="TG thải" width="85" />
+        <el-table-column prop="warningSign" label="CB" width="45" align="center" />
+        <el-table-column prop="weightTime" label="TG cân" min-width="145" />
+        <el-table-column prop="batchNumber" label="Batch" width="100" />
+        <el-table-column prop="recipeCode" label="Recipe" width="100" />
         <el-table-column label="Bồn" width="65" align="center">
           <template #default="{ row }">
             <el-button
