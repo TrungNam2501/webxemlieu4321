@@ -100,7 +100,11 @@ namespace KendaWeb.View.XemLieuBB
                     //string recipename = dtPlanId.Rows[0]["RecipeCode"].ToString().Trim();
                     planId = dtPlanId.Rows[0]["Plan_ID"].ToString().Trim();
                     System.Data.DataTable dtIn = new DataTable();
-                   
+
+                    string getProdatSql = "SELECT TOP 1 prodat FROM [erp].[dbo].[prdebe] WHERE mesid = '" + id.Trim() + "'";
+                    DataTable dtProdat = Cnn.ExecuteQuery(ConnectionStringHome, getProdatSql);
+                    bool useNewLogic = dtProdat.Rows.Count > 0 && string.Compare(dtProdat.Rows[0]["prodat"].ToString().Trim(), "20260501") >= 0;
+
                     if (May == "03" || May == "05" || May == "01" || May == "02" || May == "07" || May == "06" || May == "04" || May == "08")
                     {
                         string GetIn = "WITH ranked_b AS ( " +
@@ -108,6 +112,7 @@ namespace KendaWeb.View.XemLieuBB
                                        "ROW_NUMBER() OVER (PARTITION BY b.Barcode, b.mater_code, b.Mater_Type ORDER BY b.SaveTime DESC) as rn " +
                                        "FROM [mfns].[dbo].[Ppt_BarCodeRep] b " +
                                        "WHERE b.Plan_ID = '" + planId + "' " +
+                                       (useNewLogic ? "" : "AND SUBSTRING(b.mater_code, 1, 3) <> '680' ") +
                                        "), " +
                                        "filtered_b AS ( " +
                                        "SELECT * " +
@@ -192,7 +197,7 @@ namespace KendaWeb.View.XemLieuBB
                         {
                             //    string ppt_barcode = dt_weight_code.Rows[0][0].ToString().Trim().Substring(0, dt_weight_code.Rows[0][0].ToString().Trim().Length - 3);
                             string check_oil_coal = "  SELECT a.[barcode],a.[mater_code], a.[equip_code], a.[set_weight], CONVERT(nvarchar(20),a.[weigh_time],120) as weigh_time ,a.[error_allow], a.[weigh_type], b.mater_name " +
-                                "FROM[mfns].[dbo].[ppt_weigh] a, [mfns].[dbo].[pmt_material] b where barcode like '" + planId + "%' and weigh_type='油料' and a.mater_code = b.mater_code and a.mater_code like '4%' order by weigh_time asc ";
+                                "FROM[mfns].[dbo].[ppt_weigh] a, [mfns].[dbo].[pmt_material] b where barcode like '" + planId + "%' and weigh_type='油料' and a.mater_code = b.mater_code " + (useNewLogic ? "and a.mater_code like '4%' " : "") + "order by weigh_time asc ";
                             DataTable dt_check_old_coal = Cnn.ExecuteQuery(ConnectionString, check_oil_coal);
                             if (dt_check_old_coal.Rows.Count != 0)
                             {
@@ -616,6 +621,7 @@ namespace KendaWeb.View.XemLieuBB
                 string prodat = sql.Rows[0]["prodat"].ToString().Trim();
                 string partno = sql.Rows[0]["partno"].ToString().Trim();
                 string indat = sql.Rows[0]["indat"].ToString().Trim();
+                bool useNewLogic = string.Compare(prodat, "20260501") >= 0;
                 string ConnectionString = ChonMay(machno);
                 if (barcode.Substring(0, 2) == "RL")
                 {
@@ -665,6 +671,7 @@ namespace KendaWeb.View.XemLieuBB
                                      "ROW_NUMBER() OVER (PARTITION BY b.Barcode, b.mater_code, b.Mater_Type ORDER BY b.SaveTime DESC) as rn " +
                                      "FROM [mfns].[dbo].[Ppt_BarCodeRep] b " +
                                      "WHERE b.Plan_ID = '" + planidlumlua + "' " +
+                                     (useNewLogic ? "" : "AND SUBSTRING(b.mater_code, 1, 3) <> '680' ") +
                                      "), " +
                                      "filtered_b AS ( " +
                                      "SELECT * " +
@@ -750,7 +757,7 @@ namespace KendaWeb.View.XemLieuBB
                         {
                             //    string ppt_barcode = dt_weight_code.Rows[0][0].ToString().Trim().Substring(0, dt_weight_code.Rows[0][0].ToString().Trim().Length - 3);
                             string check_oil_coal = "  SELECT a.[barcode],a.[mater_code], a.[equip_code], a.[set_weight], CONVERT(nvarchar(20),a.[weigh_time],120) as weigh_time ,a.[error_allow], a.[weigh_type], b.mater_name " +
-                                "FROM[mfns].[dbo].[ppt_weigh] a, [mfns].[dbo].[pmt_material] b where barcode like '" + planidlumlua + "%' and weigh_type='油料' and a.mater_code = b.mater_code and a.mater_code like '4%' order by weigh_time asc ";
+                                "FROM[mfns].[dbo].[ppt_weigh] a, [mfns].[dbo].[pmt_material] b where barcode like '" + planidlumlua + "%' and weigh_type='油料' and a.mater_code = b.mater_code " + (useNewLogic ? "and a.mater_code like '4%' " : "") + "order by weigh_time asc ";
                             DataTable dt_check_old_coal = Cnn.ExecuteQuery(ConnectionString, check_oil_coal);
                             if (dt_check_old_coal.Rows.Count != 0)
                             {
