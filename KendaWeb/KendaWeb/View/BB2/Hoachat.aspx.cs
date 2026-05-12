@@ -402,11 +402,27 @@ WHERE p.Plan_Id LIKE '" + planid + @"%'
             string Scanbar = dulieu[0].ToString().Trim().Substring(0, 5);
             string Material = dulieu[1].ToString().Trim();
             string PlanID = dulieu[2].ToString().Trim();
-            string datemes = PlanID.Substring(3, 6);
-            string namdate = datemes.Substring(0, 2);
-            string thangdate = datemes.Substring(2, 2);
-            string ngaydate = datemes.Substring(4, 2);
-            string scantime = "20" + namdate + "-" + thangdate + "-" + ngaydate;
+
+            // Lấy End_Date từ TempData.tableLrPlan thay vì parse từ Plan_Id
+            string endDate = "";
+            if (TempData.tableLrPlan != null)
+            {
+                DataRow[] rows = TempData.tableLrPlan.Select("Plan_Id = '" + PlanID + "'");
+                if (rows.Length > 0)
+                {
+                    endDate = rows[0]["End_Date"].ToString().Trim();
+                }
+            }
+            // Fallback: nếu không tìm được End_Date thì dùng ngày parse từ Plan_Id
+            if (string.IsNullOrEmpty(endDate))
+            {
+                string datemes = PlanID.Substring(3, 6);
+                string namdate = datemes.Substring(0, 2);
+                string thangdate = datemes.Substring(2, 2);
+                string ngaydate = datemes.Substring(4, 2);
+                endDate = "20" + namdate + "-" + thangdate + "-" + ngaydate;
+            }
+
             if (e.CommandName == "btnLRbarcodeLog")
             {
                 string[] may = CheckMay();
@@ -416,12 +432,8 @@ WHERE p.Plan_Id LIKE '" + planid + @"%'
                 }
                 else
                 {
-                    string TuNgay = txtTuNgay.Text;
-                    string DenNgay = txtDenNgay.Text;
                     string connectionstring = "Data Source=" + may[1] + ";Initial Catalog=CWSS_S7;User ID=kendakv2;Password=kenda123";
-                    //string getData = "SELECT [Equip_Code],[Scan_Time],[Scan_Bar],[Material],[Bin],[Scan_State] FROM [CWSS_S7].[dbo].[LR_BarcodeLog] WHERE Scan_Bar LIKE '"+Scanbar+"%' AND Material LIKE '%"+Material+"%' AND Cast(Scan_Time as date) between '"+TuNgay+"' and '"+DenNgay+"'";
-                    //string getData = "SELECT [Equip_Code],[Scan_Time],[Scan_Bar],[Material],[Bin],[Scan_State] FROM [CWSS_S7].[dbo].[LR_BarcodeLog] WHERE Scan_Bar LIKE '" + Scanbar + "%' AND Material LIKE '%" + Material + "%' AND Scan_Time LIKE '%" + scantime + "%'";
-                    string getData = "  SELECT top 3 [Equip_Code],[Scan_Time],[Scan_Bar],[Material],[Bin],[Scan_State] FROM [CWSS_S7].[dbo].[LR_BarcodeLog] where [Material] = '" + Material + "' and SUBSTRING(convert(varchar,Scan_bar),1,5) ='" + Scanbar + "'  and CONVERT(datetime, [Scan_Time], 102) <  CONVERT(DATETIME, '"+scantime+"', 102) order by Scan_Time desc";
+                    string getData = "  SELECT top 3 [Equip_Code],[Scan_Time],[Scan_Bar],[Material],[Bin],[Scan_State] FROM [CWSS_S7].[dbo].[LR_BarcodeLog] where [Material] = '" + Material + "' and SUBSTRING(convert(varchar,Scan_bar),1,5) ='" + Scanbar + "'  and [Scan_Time] < '" + endDate + "' order by Scan_Time desc";
 
                     DataTable dtLrbarcodelog = Cnn.ExecuteQuery(connectionstring, getData);
                     if (dtLrbarcodelog.Rows.Count == 0)
