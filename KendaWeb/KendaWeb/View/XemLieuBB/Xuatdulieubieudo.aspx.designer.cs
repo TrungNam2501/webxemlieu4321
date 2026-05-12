@@ -67,5 +67,25 @@ namespace KendaWeb.View.XemLieuBB
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView gvDuLieu;
+
+        /// <summary>
+        /// hdChartData control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.HiddenField hdChartData;
+
+        /// <summary>
+        /// hdChartRecipe control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.HiddenField hdChartRecipe;
+
+        /// <summary>
+        /// hdChartMesid control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.HiddenField hdChartMesid;
+
+        /// <summary>
+        /// hdChartMay control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.HiddenField hdChartMay;
     }
 }

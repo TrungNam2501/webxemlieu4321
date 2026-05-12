@@ -8,6 +8,7 @@ using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Web.Script.Serialization;
 
 namespace KendaWeb.View.XemLieuBB
 {
@@ -166,12 +167,94 @@ namespace KendaWeb.View.XemLieuBB
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                // Định dạng hiển thị ngày tháng trên GridView
                 if (DateTime.TryParse(e.Row.Cells[2].Text, out DateTime start))
                     e.Row.Cells[2].Text = start.ToString("dd/MM/yyyy HH:mm:ss");
 
                 if (DateTime.TryParse(e.Row.Cells[3].Text, out DateTime end))
                     e.Row.Cells[3].Text = end.ToString("dd/MM/yyyy HH:mm:ss");
+            }
+        }
+
+        protected void btnBieuDo_Click(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+            GridViewRow row = (GridViewRow)btn.NamingContainer;
+
+            string recipeCode = HttpUtility.HtmlDecode(row.Cells[0].Text).Trim();
+            string planId = HttpUtility.HtmlDecode(row.Cells[5].Text).Trim();
+            string mesid = HttpUtility.HtmlDecode(row.Cells[6].Text).Trim();
+            string mayXuat = ddlMay.SelectedValue;
+
+            if (string.IsNullOrEmpty(planId)) return;
+
+            try
+            {
+                if (!cnnstr.TryGetValue(mayXuat.Trim(), out string cnnMay)) return;
+
+                string sql = $"SELECT Barcode, curve_data FROM [mfns].[dbo].[Ppt_curvedata] WHERE Barcode LIKE '{planId.Trim()}%'";
+                DataTable dt = Cnn.ExecuteQuery(cnnMay, sql);
+
+                if (dt == null || dt.Rows.Count == 0)
+                {
+                    ShowAlert("Không tìm thấy dữ liệu biểu đồ!");
+                    return;
+                }
+
+                var allBarcodes = new List<object>();
+                foreach (DataRow drow in dt.Rows)
+                {
+                    string barcode = drow["Barcode"].ToString().Trim();
+                    string rawCurve = drow["curve_data"] != DBNull.Value ? drow["curve_data"].ToString() : "";
+                    string[] lines = rawCurve.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    var time = new List<double>();
+                    var temp = new List<double>();
+                    var power = new List<double>();
+                    var energy = new List<double>();
+                    var pressure = new List<double>();
+                    var rpm = new List<double>();
+                    var ram = new List<double>();
+
+                    foreach (string line in lines)
+                    {
+                        string[] cols = line.Trim().Split(':');
+                        if (cols.Length >= 7)
+                        {
+                            if (double.TryParse(cols[0], out double t)) time.Add(t); else continue;
+                            if (double.TryParse(cols[1], out double te)) temp.Add(te); else temp.Add(0);
+                            if (double.TryParse(cols[2], out double pw)) power.Add(pw); else power.Add(0);
+                            if (double.TryParse(cols[3], out double en)) energy.Add(en); else energy.Add(0);
+                            if (double.TryParse(cols[4], out double pr)) pressure.Add(pr); else pressure.Add(0);
+                            if (double.TryParse(cols[5], out double rp)) rpm.Add(rp); else rpm.Add(0);
+                            if (double.TryParse(cols[6], out double ra)) ram.Add(ra); else ram.Add(0);
+                        }
+                    }
+
+                    allBarcodes.Add(new
+                    {
+                        barcode = barcode,
+                        time = time,
+                        temp = temp,
+                        power = power,
+                        energy = energy,
+                        pressure = pressure,
+                        rpm = rpm,
+                        ram = ram
+                    });
+                }
+
+                var serializer = new JavaScriptSerializer { MaxJsonLength = int.MaxValue };
+                string json = serializer.Serialize(allBarcodes);
+                hdChartData.Value = json;
+                hdChartRecipe.Value = recipeCode;
+                hdChartMesid.Value = mesid;
+                hdChartMay.Value = ddlMay.SelectedItem.Text;
+
+                ScriptManager.RegisterStartupScript(this, GetType(), "ShowChart", "showMixerChart();", true);
+            }
+            catch (Exception ex)
+            {
+                ShowAlert("Lỗi tải biểu đồ: " + ex.Message);
             }
         }
         protected void btnXuatTxt_Click(object sender, EventArgs e)
