@@ -683,24 +683,43 @@ header, .navbar, #menu-container, .main-header {
 
     function renderOverlayChart(vis) {
         var datasets = [];
-        var colors = ['#d32f2f', '#1565c0', '#2e7d32', '#f9a825', '#4a148c', '#e65100', '#00695c'];
+        var colors = ['#d32f2f', '#1565c0', '#2e7d32', '#f9a825', '#4a148c', '#e65100', '#00695c',
+                       '#c62828', '#0277bd', '#558b2f', '#ef6c00', '#6a1b9a', '#00838f', '#d84315',
+                       '#1b5e20', '#4527a0', '#f57f17', '#01579b', '#880e4f', '#3e2723', '#37474f'];
+
+        // Cấu hình các thông số overlay
+        var paramConfigs = [];
+        if (vis.temp)     paramConfigs.push({ key: 'temp',     name: 'Nhiệt độ',  unit: '°C',  axis: 'yLeft',          dash: [] });
+        if (vis.power)    paramConfigs.push({ key: 'power',    name: 'Công suất',  unit: 'kW',  axis: 'yLeft',          dash: [5, 3] });
+        if (vis.pressure) paramConfigs.push({ key: 'pressure', name: 'Áp suất',    unit: 'MPa', axis: 'yRightPressure', dash: [2, 2] });
+        if (vis.energy)   paramConfigs.push({ key: 'energy',   name: 'Năng lượng', unit: 'kWh', axis: 'yRightEnergy',   dash: [8, 4] });
+        if (vis.rpm)      paramConfigs.push({ key: 'rpm',      name: 'Tốc độ',     unit: 'RPM', axis: 'yLeft',          dash: [3, 5] });
+        if (vis.ram)      paramConfigs.push({ key: 'ram',      name: 'Chày nén',   unit: '',    axis: 'yLeft',          dash: [1, 3] });
 
         for (var i = 0; i < _chartData.length; i++) {
             var d = _chartData[i];
-            var color = colors[i % colors.length];
-            datasets.push({
-                label: 'Mẻ ' + (i + 1) + ' (' + d.barcode.slice(-3) + ') - Nhiệt độ',
-                data: d.temp,
-                borderColor: color,
-                borderWidth: 2,
-                pointRadius: 0,
-                tension: 0.3,
-                yAxisID: 'yLeft'
-            });
+            var baseColor = colors[i % colors.length];
+            var suffix = d.barcode.slice(-3);
+
+            for (var p = 0; p < paramConfigs.length; p++) {
+                var cfg = paramConfigs[p];
+                datasets.push({
+                    label: 'Mẻ ' + (i + 1) + ' (' + suffix + ') - ' + cfg.name,
+                    data: d[cfg.key],
+                    borderColor: baseColor,
+                    borderWidth: paramConfigs.length > 1 ? 1.5 : 2,
+                    borderDash: cfg.dash,
+                    pointRadius: 0,
+                    tension: 0.3,
+                    yAxisID: cfg.axis
+                });
+            }
         }
 
+        var paramNames = paramConfigs.map(function(c) { return c.name; }).join(', ');
         document.getElementById('chartStats').innerHTML =
-            '<b>So sánh nhiệt độ ' + _chartData.length + ' mẻ</b> — Kiểm tra tính đồng nhất quá trình luyện';
+            '<b>So sánh ' + _chartData.length + ' mẻ</b> — ' + paramNames +
+            ' &nbsp;|&nbsp; Đường liền: Nhiệt độ, Nét đứt khác nhau cho từng thông số';
 
         var maxLen = 0;
         for (var j = 0; j < _chartData.length; j++) {
