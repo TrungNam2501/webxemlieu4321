@@ -452,153 +452,106 @@
             width: 100%; 
             position: relative;">
 
-    <!-- Layer hiệu ứng cánh hoa rơi (nằm trên background nhưng không che tương tác) -->
-    <div class="falling-leaves">
-        <div class="leaf-scene"></div>
-    </div>
+    <!-- Canvas hiệu ứng mùa hè - cánh hoa rơi physics -->
+    <canvas id="summer-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5;"></canvas>
 
 </div>
 
-<!-- CSS cho hiệu ứng cánh hoa rơi -->
-<style type="text/css">
-    .falling-leaves {
-        position: absolute;
-        inset: 0;
-        z-index: 5;                     /* Cao hơn background, nhưng thấp hơn navbar nếu cần */
-        pointer-events: none;           /* Không cản click chuột lên các phần tử khác */
-        overflow: hidden;
-    }
-
-    .leaf-scene {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        transform-style: preserve-3d;
-        perspective: 900px;
-    }
-
-    .leaf-scene div {
-        position: absolute;
-        width: 28px;
-        height: 28px;
-        background: url('../SVG/canh-hoa-mai.svg') no-repeat center/contain;
-        backface-visibility: visible;
-    }
-
-    .leaf-scene div:nth-child(2n) {
-        background: url('../SVG/canh-hoa-dao.svg') no-repeat center/contain;
-    }
-</style>
-
-<!-- JavaScript hiệu ứng cánh hoa rơi -->
+<!-- JavaScript hiệu ứng mùa hè - Physics-based cánh hoa rơi -->
 <script type="text/javascript">
-    var LeafScene = function (viewport) {
-        this.viewport = viewport;
-        this.world = document.createElement("div");
-        this.leaves = [];
-        this.options = {
-            numLeaves: 35,                  // Số lượng cánh hoa - điều chỉnh nếu muốn dày/mỏng hơn
-            wind: {
-                magnitude: 1.4,
-                maxSpeed: 9,
-                duration: 140,
-                start: 0,
-                speed: 0
-            }
-        };
-        this.width = this.viewport.offsetWidth;
-        this.height = this.viewport.offsetHeight;
-        this.timer = 0;
+    (function () {
+        var canvas = document.getElementById('summer-canvas');
+        var ctx = canvas.getContext('2d');
 
-        this._resetLeaf = function (leaf) {
-            leaf.x = Math.random() * this.width * 1.5 + this.width * 0.5;
-            leaf.y = -50;
-            leaf.z = Math.random() * 300 + 100;
-            leaf.rotation = {
-                axis: Math.random() > 0.5 ? "X" : "Z",
-                value: Math.random() * 360,
-                speed: 4 + Math.random() * 12
-            };
-            leaf.xSpeedVariation = Math.random() * 1.2 - 0.6;
-            leaf.ySpeed = 1.5 + Math.random() * 2.5;
-            return leaf;
-        };
+        var width, height, petals = [];
+        var petalCount = 50;
+        var globalWind = 0.5;
 
-        this._updateLeaf = function (leaf) {
-            var wind = this.options.wind.speed(this.timer - this.options.wind.start, leaf.y) + leaf.xSpeedVariation;
-            leaf.x -= wind * 0.8;
-            leaf.y += leaf.ySpeed;
-            leaf.rotation.value += leaf.rotation.speed;
-
-            var t =
-                `translateX(${leaf.x}px) translateY(${leaf.y}px) translateZ(${leaf.z}px) ` +
-                `rotate${leaf.rotation.axis}(${leaf.rotation.value}deg)`;
-
-            if (leaf.rotation.axis !== "X") {
-                t += ` rotateX(${leaf.rotation.value * 0.6}deg)`;
-            }
-
-            leaf.el.style.transform = t;
-            leaf.el.style.webkitTransform = t;
-
-            if (leaf.x < -80 || leaf.y > this.height + 80) {
-                this._resetLeaf(leaf);
-            }
-        };
-
-        this._updateWind = function () {
-            if (this.timer === 0 || this.timer > this.options.wind.start + this.options.wind.duration) {
-                this.options.wind.magnitude = Math.random() * this.options.wind.maxSpeed + 2;
-                this.options.wind.duration = 80 * this.options.wind.magnitude + (Math.random() * 60 - 30);
-                this.options.wind.start = this.timer;
-
-                var h = this.height;
-                this.options.wind.speed = function (t, y) {
-                    var intensity = (this.magnitude / 2) * (h - (2 * y) / 3) / h;
-                    return intensity * (Math.sin((2 * Math.PI / this.duration) * t + Math.PI * 1.5) + 1);
-                };
-            }
-        };
-    };
-
-    LeafScene.prototype.init = function () {
-        for (var i = 0; i < this.options.numLeaves; i++) {
-            var leaf = {
-                el: document.createElement("div"),
-                x: 0, y: 0, z: 0,
-                rotation: { axis: "X", value: 0, speed: 0 },
-                xSpeedVariation: 0,
-                ySpeed: 0
-            };
-            this._resetLeaf(leaf);
-            this.leaves.push(leaf);
-            this.world.appendChild(leaf.el);
+        function Petal() {
+            this.init();
         }
-        this.world.className = "leaf-scene";
-        this.viewport.appendChild(this.world);
 
-        window.addEventListener("resize", () => {
-            this.width = this.viewport.offsetWidth;
-            this.height = this.viewport.offsetHeight;
+        Petal.prototype.init = function () {
+            this.x = Math.random() * width;
+            this.y = Math.random() * height - height;
+            this.size = Math.random() * 8 + 6;
+            this.speed = Math.random() * 1 + 0.5;
+
+            this.horizontalSpeed = Math.random() * 1 + 0.5;
+            this.oscillationSpeed = Math.random() * 0.02 + 0.01;
+            this.time = Math.random() * 100;
+
+            this.angle = Math.random() * 360;
+            this.spin = Math.random() * 2 - 1;
+            this.color = 'rgba(' + (220 + Math.floor(Math.random() * 35)) + ', ' + Math.floor(Math.random() * 60) + ', ' + Math.floor(Math.random() * 40) + ', ' + (Math.random() * 0.4 + 0.4).toFixed(2) + ')';
+        };
+
+        Petal.prototype.update = function () {
+            this.time += this.oscillationSpeed;
+            this.y += this.speed;
+            this.x += Math.sin(this.time) * this.horizontalSpeed + globalWind;
+            this.angle += this.spin;
+
+            if (this.y > height) {
+                this.init();
+                this.y = -20;
+            }
+        };
+
+        Petal.prototype.draw = function () {
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.angle * Math.PI / 180);
+
+            var flip = Math.sin(this.time * 2);
+            ctx.scale(flip, 1);
+
+            ctx.beginPath();
+            ctx.fillStyle = this.color;
+            ctx.moveTo(0, 0);
+            ctx.quadraticCurveTo(this.size, this.size, 0, this.size * 2);
+            ctx.quadraticCurveTo(-this.size, this.size, 0, 0);
+            ctx.fill();
+            ctx.restore();
+        };
+
+        function resize() {
+            var container = canvas.parentElement;
+            width = canvas.width = container.offsetWidth;
+            height = canvas.height = container.offsetHeight;
+        }
+
+        function setup() {
+            resize();
+            petals = [];
+            for (var i = 0; i < petalCount; i++) {
+                petals.push(new Petal());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            for (var i = 0; i < petals.length; i++) {
+                petals[i].update();
+                petals[i].draw();
+            }
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', function () {
+            setup();
         });
-    };
 
-    LeafScene.prototype.render = function () {
-        this._updateWind();
-        this.leaves.forEach(leaf => this._updateLeaf(leaf));
-        this.timer++;
-        requestAnimationFrame(this.render.bind(this));
-    };
+        // Khởi động hiệu ứng khi trang load
+        window.addEventListener('load', function () {
+            setup();
+            animate();
+        });
 
-    // Khởi động hiệu ứng khi trang load
-    window.addEventListener("load", function () {
-        var container = document.querySelector(".falling-leaves");
-        if (container) {
-            var scene = new LeafScene(container);
-            scene.init();
-            scene.render();
-        }
-    });
+        // Thỉnh thoảng đổi hướng gió cho tự nhiên
+        setInterval(function () {
+            globalWind = (Math.random() * 2) - 1;
+        }, 5000);
+    })();
 </script>
 </asp:Content>
