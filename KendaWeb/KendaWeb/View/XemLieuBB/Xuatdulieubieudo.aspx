@@ -715,6 +715,15 @@ header, .navbar, #menu-container, .main-header {
     function createChart(labels, datasets) {
         var ctx = document.getElementById('mixerChart').getContext('2d');
 
+        // Tính max trục Y trái (auto-scale theo dữ liệu thực tế)
+        var maxLeft = 200;
+        for (var i = 0; i < datasets.length; i++) {
+            if (datasets[i].yAxisID === 'yLeft') {
+                var mx = Math.max.apply(null, datasets[i].data);
+                if (mx > maxLeft) maxLeft = Math.ceil(mx / 50) * 50 + 20;
+            }
+        }
+
         // Tính max trục Y phải
         var maxRight = 12;
         for (var i = 0; i < datasets.length; i++) {
@@ -773,7 +782,7 @@ header, .navbar, #menu-container, .main-header {
                         type: 'linear',
                         position: 'left',
                         min: 0,
-                        max: 200,
+                        max: maxLeft,
                         title: {
                             display: true,
                             text: 'Nhiệt độ (°C) / Công suất (kW) / RPM / Ram',
