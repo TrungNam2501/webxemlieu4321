@@ -636,7 +636,7 @@ header, .navbar, #menu-container, .main-header {
                 order: 4
             });
         }
-        // Áp suất (Pressure) - Xanh lá - trục Y phải
+        // Áp suất (Pressure) - Xanh lá - trục Y phải (Áp suất 0-12)
         if (vis.pressure) {
             datasets.push({
                 label: 'Áp suất (MPa)',
@@ -646,11 +646,11 @@ header, .navbar, #menu-container, .main-header {
                 borderWidth: 2,
                 pointRadius: 0,
                 tension: 0.3,
-                yAxisID: 'yRight',
+                yAxisID: 'yRightPressure',
                 order: 6
             });
         }
-        // Năng lượng (Energy) - Vàng - trục Y phải
+        // Năng lượng (Energy) - Cam/Vàng - trục Y phải riêng (Năng lượng 0-40)
         if (vis.energy) {
             datasets.push({
                 label: 'Năng lượng (kWh)',
@@ -660,7 +660,7 @@ header, .navbar, #menu-container, .main-header {
                 borderWidth: 2,
                 pointRadius: 0,
                 tension: 0.3,
-                yAxisID: 'yRight',
+                yAxisID: 'yRightEnergy',
                 order: 7
             });
         }
@@ -724,12 +724,12 @@ header, .navbar, #menu-container, .main-header {
             }
         }
 
-        // Tính max trục Y phải
-        var maxRight = 12;
+        // Tính max trục Y phải cho Năng lượng
+        var maxRightEnergy = 40;
         for (var i = 0; i < datasets.length; i++) {
-            if (datasets[i].yAxisID === 'yRight') {
+            if (datasets[i].yAxisID === 'yRightEnergy') {
                 var mx = Math.max.apply(null, datasets[i].data);
-                if (mx > maxRight) maxRight = Math.ceil(mx / 5) * 5 + 5;
+                if (mx > maxRightEnergy) maxRightEnergy = Math.ceil(mx / 10) * 10 + 5;
             }
         }
 
@@ -799,11 +799,11 @@ header, .navbar, #menu-container, .main-header {
                             lineWidth: 1
                         }
                     },
-                    yRight: {
+                    yRightPressure: {
                         type: 'linear',
                         position: 'right',
                         min: 0,
-                        max: maxRight,
+                        max: 12,
                         title: {
                             display: true,
                             text: 'Áp suất (MPa) / Năng lượng (kWh)',
@@ -811,10 +811,18 @@ header, .navbar, #menu-container, .main-header {
                             color: '#2e7d32'
                         },
                         ticks: {
+                            stepSize: 1,
                             font: { size: 12 },
                             color: '#2e7d32'
                         },
                         grid: { drawOnChartArea: false }
+                    },
+                    yRightEnergy: {
+                        type: 'linear',
+                        position: 'right',
+                        min: 0,
+                        max: maxRightEnergy,
+                        display: false
                     }
                 }
             }
