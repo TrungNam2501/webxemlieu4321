@@ -226,7 +226,7 @@ namespace KendaWeb.View.XemLieuBB
                             if (double.TryParse(cols[3], out double en)) energy.Add(en); else energy.Add(0);
                             if (double.TryParse(cols[4], out double pr)) pressure.Add(pr); else pressure.Add(0);
                             if (double.TryParse(cols[5], out double rp)) rpm.Add(rp); else rpm.Add(0);
-                            if (double.TryParse(cols[6], out double ra)) ram.Add(ra); else ram.Add(0);
+                            if (double.TryParse(cols[6], out double ra)) ram.Add(ra / 10.0); else ram.Add(0);
                         }
                     }
 
